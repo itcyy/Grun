@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"net/http"
+	"os"
 )
 
 /*
@@ -264,4 +265,26 @@ func (grun *GrunServer) WebSocketInit(c gin.Context) (*websocket.Conn, error) {
 		// 决解跨域问题
 		CheckOrigin: func(r *http.Request) bool { return true },
 	}).Upgrade(c.Writer, c.Request, nil)
+}
+
+/*
+* LogWriter
+*  @author: [it Chen Huawei]
+*  @version[v1.0.0.1,2023-11-3]
+*  @receiver grun
+*  @param filename
+*  @Description:
+*  @return error
+ */
+func (grun *GrunServer) LogWriter(filename string) error {
+	file, err := os.Create(filename)
+	if err != nil {
+		return err
+	}
+	router.Use(gin.LoggerWithWriter(file))
+	return nil
+
+}
+func (grun *GrunServer) GrunDefault() *GrunServer {
+	return &GrunServer{}
 }
